@@ -2,7 +2,7 @@ const os = require('os');
 const fetch = require('node-fetch');
 
 // Configuration
-const parseableUrl = 'http://localhost:8000/api/v1/logstream/otel';
+const parseableUrl = 'http://localhost:8000/api/v1/logstream/oteltest';
 const authCredentials = 'Basic YWRtaW46YWRtaW4='; // Replace with actual credentials
 
 function collectSystemMetrics() {

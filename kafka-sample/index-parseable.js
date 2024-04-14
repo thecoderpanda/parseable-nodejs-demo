@@ -12,7 +12,7 @@ var requestOptions = {
     redirect: 'follow'
 };
 // TODO: Replace the url with your Parseable URL and stream name
-fetch("http://localhost:8000/api/v1/logstream/demoapp", requestOptions)
+fetch("http://localhost:8000/api/v1/logstream/oteltest", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
