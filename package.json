@@ -9,18 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@opentelemetry/api": "^1.8.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.44.0",
-    "@opentelemetry/exporter-collector-grpc": "^0.25.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "^0.50.0",
-    "@opentelemetry/exporter-otlp-grpc": "^0.26.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.50.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.50.0",
-    "@opentelemetry/sdk-metrics-base": "^0.31.0",
-    "@opentelemetry/sdk-node": "^0.50.0",
-    "@opentelemetry/sdk-trace-node": "^1.23.0",
-    "grpc": "^1.24.11",
-    "kafkajs": "^2.2.4",
+    "express": "^4.19.2",
     "node-fetch": "^2.7.0"
   }
 }

@@ -1,34 +1,12 @@
-const { MeterProvider } = require('@opentelemetry/sdk-metrics-base');
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const os = require('os');
 const fetch = require('node-fetch');
+const express = require('express');
+const app = express();
+const port = 3000;
 
 // Parseable URL and credentials
-const parseableUrl = 'http://localhost:8000/api/v1/logstream/oteltest';
+const parseableUrl = 'http://localhost:8000/api/v1/logstream/testapplogs';
 const authCredentials = 'Basic YWRtaW46YWRtaW4='; // Replace with actual credentials
-
-const meterProvider = new MeterProvider({
-    resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'node-otel-parseable',
-    }),
-});
-
-const meter = meterProvider.getMeter('system-metrics');
-
-const memoryUsage = meter.createObservableGauge('memory_usage', {
-    description: 'Memory usage of the system',
-});
-
-console.log('Meter Provider:', meter);
-console.log('Memory Usage Gauge:', memoryUsage);
-
-memoryUsage.addCallback((observableResult) => {
-    const metrics = collectSystemMetrics();
-    console.log('Collecting Metrics:', metrics);
-    observableResult.observe(metrics.totalMem - metrics.freeMem, { state: 'used' });
-    observableResult.observe(metrics.freeMem, { state: 'free' });
-});
 
 function collectSystemMetrics() {
     return {
@@ -44,9 +22,10 @@ function collectSystemMetrics() {
     };
 }
 
-function sendMetrics() {
+function sendMetrics(isError = false) {
     const metrics = collectSystemMetrics();
-    console.log('Sending Metrics:', metrics);
+    metrics.status = isError ? 'error' : 'success';
+    console.log(`Sending ${metrics.status} Metrics:`, metrics);
     const headers = new fetch.Headers({
         "Authorization": authCredentials,
         "Content-Type": "application/json",
@@ -73,12 +52,28 @@ function sendMetrics() {
             return response.text();
         })
         .then(result => {
-            console.log('Metrics successfully ingested.')
+            console.log(`Metrics successfully ingested. Status: ${metrics.status}`);
         })
         .catch(error => {
             console.log('Error sending metrics:', error.message);
         });
 }
 
-// Set the interval to send metrics every 2 seconds
-setInterval(sendMetrics, 2000);
+// Set the interval to send success metrics every 3 seconds
+setInterval(() => sendMetrics(), 3000);
+
+// Endpoint to generate success log
+app.get('/generate-success', (req, res) => {
+    sendMetrics();
+    res.send('Success log generated');
+});
+
+// Endpoint to generate error log
+app.get('/generate-error', (req, res) => {
+    sendMetrics(true);
+    res.send('Error log generated');
+});
+
+app.listen(port, () => {
+    console.log(`App listening at http://localhost:${port}`);
+});
